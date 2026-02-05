@@ -10,6 +10,7 @@ import { searchEndpoints } from './search/endpoint-search.js';
 import { searchByTag } from './search/tag-search.js';
 import { searchSchemas } from './search/schema-search.js';
 import { fulltextSearch } from './search/fulltext-search.js';
+import { listEndpoints, ListEndpointsParams } from './search/list-endpoints.js';
 
 export class OsfApiMcpServer {
   private server: Server;
@@ -59,6 +60,8 @@ export class OsfApiMcpServer {
             return this.handleGetEndpointDetails(args || {});
           case 'list_tags':
             return this.handleListTags();
+          case 'list_endpoints':
+            return this.handleListEndpoints(args || {});
           default:
             throw new Error(`Unknown tool: ${name}`);
         }
@@ -197,6 +200,25 @@ export class OsfApiMcpServer {
           properties: {},
         },
       },
+      {
+        name: 'list_endpoints',
+        description: 'List all available OSF API v2 endpoints with pagination. Returns path, method, summary, operationId, and tags for each endpoint.',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            limit: {
+              type: 'number',
+              description: 'Maximum number of endpoints to return (default: 50)',
+              default: 50,
+            },
+            offset: {
+              type: 'number',
+              description: 'Number of endpoints to skip (default: 0)',
+              default: 0,
+            },
+          },
+        },
+      },
     ];
   }
 
@@ -282,6 +304,18 @@ export class OsfApiMcpServer {
         {
           type: 'text',
           text: JSON.stringify(result, null, 2),
+        },
+      ],
+    };
+  }
+
+  private handleListEndpoints(args: ListEndpointsParams) {
+    const results = listEndpoints(this.loader, args);
+    return {
+      content: [
+        {
+          type: 'text',
+          text: JSON.stringify(results, null, 2),
         },
       ],
     };
