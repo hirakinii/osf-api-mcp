@@ -1,0 +1,243 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API",
+    "description": "Minimal test API specification",
+    "version": "1.0.0"
+  },
+  "host": "api.test.io",
+  "schemes": ["https"],
+  "basePath": "/v2",
+  "tags": [
+    { "name": "Files", "description": "File operations" },
+    { "name": "FileVersions", "description": "File version operations" },
+    { "name": "Nodes", "description": "Node operations" },
+    { "name": "Users", "description": "User operations" }
+  ],
+  "x-tagGroups": [
+    { "name": "Core", "tags": ["Files", "Nodes"] },
+    { "name": "Advanced", "tags": ["FileVersions", "Users"] }
+  ],
+  "paths": {
+    "/files/": {
+      "get": {
+        "summary": "List all files",
+        "description": "Returns a list of all files in the system",
+        "operationId": "files_list",
+        "tags": ["Files"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "name": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "x-response-schema": "FileList"
+      }
+    },
+    "/files/{file_id}/": {
+      "get": {
+        "summary": "Get file details",
+        "description": "Returns details of a specific file",
+        "operationId": "files_read",
+        "tags": ["Files"],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "description": "The unique identifier of the file",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "name": { "type": "string" },
+                "size": { "type": "integer" }
+              }
+            }
+          }
+        },
+        "x-response-schema": "File"
+      },
+      "patch": {
+        "summary": "Update file",
+        "description": "Updates a specific file",
+        "operationId": "files_update",
+        "tags": ["Files"],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete file",
+        "description": "Deletes a specific file",
+        "operationId": "files_delete",
+        "tags": ["Files"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
+    "/files/{file_id}/versions/": {
+      "get": {
+        "summary": "List file versions",
+        "description": "Returns all versions of a file",
+        "operationId": "file_versions_list",
+        "tags": ["FileVersions"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "version": { "type": "integer" },
+                  "created_at": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "x-response-schema": "FileVersionList"
+      }
+    },
+    "/nodes/": {
+      "get": {
+        "summary": "List all nodes",
+        "description": "Returns a list of all nodes",
+        "operationId": "nodes_list",
+        "tags": ["Nodes"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "title": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "x-response-schema": "NodeList"
+      },
+      "post": {
+        "summary": "Create a node",
+        "description": "Creates a new node",
+        "operationId": "nodes_create",
+        "tags": ["Nodes"],
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/nodes/{node_id}/": {
+      "get": {
+        "summary": "Get node details",
+        "description": "Returns details of a specific node",
+        "operationId": "nodes_read",
+        "tags": ["Nodes"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "description": { "type": "string" }
+              }
+            }
+          }
+        },
+        "x-response-schema": "Node"
+      }
+    },
+    "/users/": {
+      "get": {
+        "summary": "List users",
+        "description": "Returns a list of users",
+        "operationId": "users_list",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "username": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "x-response-schema": "UserList"
+      }
+    },
+    "/users/{user_id}/": {
+      "get": {
+        "summary": "Get user details",
+        "description": "Returns details of a specific user",
+        "operationId": "users_read",
+        "tags": ["Users"],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "username": { "type": "string" },
+                "email": { "type": "string" }
+              }
+            }
+          }
+        },
+        "x-response-schema": "User"
+      }
+    }
+  }
+}

@@ -6,10 +6,15 @@ import {
   Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { SwaggerLoader } from './utils/swagger-loader.js';
-import { searchEndpoints } from './search/endpoint-search.js';
-import { searchByTag } from './search/tag-search.js';
-import { searchSchemas } from './search/schema-search.js';
-import { fulltextSearch } from './search/fulltext-search.js';
+import { searchEndpoints, type EndpointSearchParams } from './search/endpoint-search.js';
+import { searchByTag, type TagSearchParams } from './search/tag-search.js';
+import { searchSchemas, type SchemaSearchParams } from './search/schema-search.js';
+import { fulltextSearch, type FulltextSearchParams } from './search/fulltext-search.js';
+
+interface GetEndpointDetailsParams {
+  path: string;
+  method: string;
+}
 
 export class OsfApiMcpServer {
   private server: Server;
@@ -200,8 +205,8 @@ export class OsfApiMcpServer {
     ];
   }
 
-  private handleSearchEndpoints(args: any) {
-    const results = searchEndpoints(this.loader, args);
+  private handleSearchEndpoints(args: Record<string, unknown>) {
+    const results = searchEndpoints(this.loader, args as EndpointSearchParams);
     return {
       content: [
         {
@@ -212,11 +217,11 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleSearchByTag(args: any) {
+  private handleSearchByTag(args: Record<string, unknown>) {
     if (!args.tag) {
       throw new Error('tag parameter is required');
     }
-    const results = searchByTag(this.loader, args);
+    const results = searchByTag(this.loader, args as unknown as TagSearchParams);
     return {
       content: [
         {
@@ -227,8 +232,8 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleSearchSchemas(args: any) {
-    const results = searchSchemas(this.loader, args);
+  private handleSearchSchemas(args: Record<string, unknown>) {
+    const results = searchSchemas(this.loader, args as SchemaSearchParams);
     return {
       content: [
         {
@@ -239,11 +244,11 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleFulltextSearch(args: any) {
+  private handleFulltextSearch(args: Record<string, unknown>) {
     if (!args.query) {
       throw new Error('query parameter is required');
     }
-    const results = fulltextSearch(this.loader, args);
+    const results = fulltextSearch(this.loader, args as unknown as FulltextSearchParams);
     return {
       content: [
         {
@@ -254,21 +259,22 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleGetEndpointDetails(args: any) {
+  private handleGetEndpointDetails(args: Record<string, unknown>) {
     if (!args.path || !args.method) {
       throw new Error('path and method parameters are required');
     }
 
+    const typedArgs = args as unknown as GetEndpointDetailsParams;
     const index = this.loader.getEndpointIndex();
-    const operation = index.paths.get(args.path)?.get(args.method.toUpperCase());
+    const operation = index.paths.get(typedArgs.path)?.get(typedArgs.method.toUpperCase());
 
     if (!operation) {
-      throw new Error(`Endpoint not found: ${args.method.toUpperCase()} ${args.path}`);
+      throw new Error(`Endpoint not found: ${typedArgs.method.toUpperCase()} ${typedArgs.path}`);
     }
 
     const result = {
-      path: args.path,
-      method: args.method.toUpperCase(),
+      path: typedArgs.path,
+      method: typedArgs.method.toUpperCase(),
       summary: operation.summary,
       description: operation.description,
       operationId: operation.operationId,
