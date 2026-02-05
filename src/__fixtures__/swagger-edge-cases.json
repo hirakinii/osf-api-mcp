@@ -1,0 +1,146 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Edge Cases API",
+    "description": "API for testing edge cases",
+    "version": "1.0.0"
+  },
+  "host": "api.test.io",
+  "schemes": ["https"],
+  "basePath": "/v2",
+  "tags": [
+    { "name": "EdgeCases", "description": "Edge case endpoints" }
+  ],
+  "paths": {
+    "/endpoint-no-schema-name/": {
+      "get": {
+        "summary": "Endpoint without schema name",
+        "description": "Tests schema without x-response-schema or title",
+        "operationId": "no_schema_name_1",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "200": {
+            "description": "Response without named schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/another-no-schema-name/": {
+      "get": {
+        "summary": "Another endpoint without schema name",
+        "description": "Another test for undefined schemaName collision",
+        "operationId": "no_schema_name_2",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "200": {
+            "description": "Another response without named schema",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/nested-schema/": {
+      "get": {
+        "summary": "Deeply nested schema",
+        "description": "Tests deeply nested schema properties",
+        "operationId": "nested_schema",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "200": {
+            "description": "Nested schema response",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "level1": {
+                  "type": "object",
+                  "properties": {
+                    "level2": {
+                      "type": "object",
+                      "properties": {
+                        "level3": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-response-schema": "NestedSchema"
+      }
+    },
+    "/array-items/": {
+      "get": {
+        "summary": "Array with items",
+        "description": "Tests array schema with items",
+        "operationId": "array_items",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "200": {
+            "description": "Array response",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "itemProp": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "x-response-schema": "ItemArray"
+      }
+    },
+    "/empty-response/": {
+      "get": {
+        "summary": "Empty response",
+        "description": "Endpoint with no response schema",
+        "operationId": "empty_response",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "204": {
+            "description": "No content"
+          }
+        }
+      }
+    },
+    "/short-words/": {
+      "get": {
+        "summary": "OS API id",
+        "description": "Short words like os api id that might be filtered",
+        "operationId": "short_words",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/special-chars/": {
+      "get": {
+        "summary": "File-upload endpoint",
+        "description": "Tests special-chars like file-upload and user_name",
+        "operationId": "special_chars",
+        "tags": ["EdgeCases"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
