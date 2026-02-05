@@ -35,7 +35,18 @@ Add to your Claude Desktop configuration (`claude_desktop_config.json`):
 }
 ```
 
-As of 2025/2/5, you can add this server to `<project_root>/.mcp.json` to configure it with the project scope.
+You can also add this server to `<project_root>/.mcp.json` to configure it with the project scope:
+
+```json
+{
+  "mcpServers": {
+    "osf-api-docs": {
+      "command": "node",
+      "args": ["/path/to/osf-api-mcp/dist/index.js"]
+    }
+  }
+}
+```
 
 ### Testing with MCP Inspector
 
@@ -154,19 +165,29 @@ The specification file is located at [schema/osf_api/swagger.json](schema/osf_ap
 ```
 osf-api-mcp/
 ├── src/
-│   ├── index.ts              # Entry point
-│   ├── server.ts             # MCP server implementation
-│   ├── types.ts              # TypeScript type definitions
-│   ├── search/               # Search implementations
+│   ├── index.ts                    # Entry point
+│   ├── server.ts                   # MCP server implementation
+│   ├── server.test.ts              # Server tests
+│   ├── types.ts                    # TypeScript type definitions
+│   ├── __mocks__/                  # Test mocks
+│   │   └── swagger-loader.mock.ts
+│   ├── search/                     # Search implementations
 │   │   ├── endpoint-search.ts
+│   │   ├── endpoint-search.test.ts
 │   │   ├── tag-search.ts
+│   │   ├── tag-search.test.ts
 │   │   ├── schema-search.ts
-│   │   └── fulltext-search.ts
+│   │   ├── schema-search.test.ts
+│   │   ├── fulltext-search.ts
+│   │   └── fulltext-search.test.ts
 │   └── utils/
-│       └── swagger-loader.ts # Swagger spec loader & indexer
-└── schema/
-    └── osf_api/
-        └── swagger.json      # OSF API specification
+│       ├── swagger-loader.ts       # Swagger spec loader & indexer
+│       └── swagger-loader.test.ts
+├── schema/
+│   └── osf_api/
+│       └── swagger.json            # OSF API specification
+├── vitest.config.ts                # Vitest configuration
+└── eslint.config.js                # ESLint configuration
 ```
 
 ### Performance
@@ -199,6 +220,27 @@ npm run watch
 
 ```bash
 npm run dev
+```
+
+### Testing
+
+Run tests with Vitest:
+
+```bash
+npm test              # Run tests in watch mode
+npm run test:run      # Run tests once
+npm run test:coverage # Run tests with coverage report
+```
+
+Coverage thresholds are configured at 80% for statements, functions, and lines, and 75% for branches.
+
+### Linting
+
+Run ESLint:
+
+```bash
+npm run lint          # Check for linting issues
+npm run lint:fix      # Fix linting issues automatically
 ```
 
 ## License

@@ -24,7 +24,11 @@
     "start": "node dist/index.js",
     "dev": "tsc && node dist/index.js",
     "watch": "tsc --watch",
-    "lint": "eslint src/"
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix"
   },
   "keywords": [
     "mcp",
@@ -41,8 +45,12 @@
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^9.39.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.54.0"
+    "typescript-eslint": "^8.54.0",
+    "vitest": "^4.0.18"
   }
 }
