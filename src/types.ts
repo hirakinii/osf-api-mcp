@@ -73,7 +73,7 @@ export interface Parameter {
 export interface Response {
   description: string;
   schema?: Schema;
-  examples?: Record<string, any>;
+  examples?: Record<string, unknown>;
 }
 
 export interface Schema {

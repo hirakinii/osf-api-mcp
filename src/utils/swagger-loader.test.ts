@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { SwaggerLoader } from './swagger-loader.js';
 import { getMinimalFixturePath, getEdgeCasesFixturePath } from '../__mocks__/swagger-loader.mock.js';
 

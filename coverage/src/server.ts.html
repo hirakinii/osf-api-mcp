@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">69.81% </span>
+                <span class="strong">70.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/53</span>
+                <span class='fraction'>38/54</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.58% </span>
+                <span class="strong">71.15% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>36/51</span>
+                <span class='fraction'>37/52</span>
             </div>
         
             
@@ -389,7 +389,18 @@
 <a name='L324'></a><a href='#L324'>324</a>
 <a name='L325'></a><a href='#L325'>325</a>
 <a name='L326'></a><a href='#L326'>326</a>
-<a name='L327'></a><a href='#L327'>327</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -650,6 +661,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -723,10 +735,15 @@ import {
   Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { SwaggerLoader } from './utils/swagger-loader.js';
-import { searchEndpoints } from './search/endpoint-search.js';
-import { searchByTag } from './search/tag-search.js';
-import { searchSchemas } from './search/schema-search.js';
-import { fulltextSearch } from './search/fulltext-search.js';
+import { searchEndpoints, type EndpointSearchParams } from './search/endpoint-search.js';
+import { searchByTag, type TagSearchParams } from './search/tag-search.js';
+import { searchSchemas, type SchemaSearchParams } from './search/schema-search.js';
+import { fulltextSearch, type FulltextSearchParams } from './search/fulltext-search.js';
+&nbsp;
+interface GetEndpointDetailsParams {
+  path: string;
+  method: string;
+}
 &nbsp;
 export class OsfApiMcpServer {
   private server: Server;
@@ -917,8 +934,8 @@ export class OsfApiMcpServer {
     ];
   }
 &nbsp;
-  private handleSearchEndpoints(args: any) {
-    const results = searchEndpoints(this.loader, args);
+  private handleSearchEndpoints(args: Record&lt;string, unknown&gt;) {
+    const results = searchEndpoints(this.loader, args as EndpointSearchParams);
     return {
       content: [
         {
@@ -929,11 +946,11 @@ export class OsfApiMcpServer {
     };
   }
 &nbsp;
-  private handleSearchByTag(args: any) {
+  private handleSearchByTag(args: Record&lt;string, unknown&gt;) {
     if (!args.tag) {
       throw new Error('tag parameter is required');
     }
-    const results = searchByTag(this.loader, args);
+    const results = searchByTag(this.loader, args as unknown as TagSearchParams);
     return {
       content: [
         {
@@ -944,8 +961,8 @@ export class OsfApiMcpServer {
     };
   }
 &nbsp;
-  private handleSearchSchemas(args: any) {
-    const results = searchSchemas(this.loader, args);
+  private handleSearchSchemas(args: Record&lt;string, unknown&gt;) {
+    const results = searchSchemas(this.loader, args as SchemaSearchParams);
     return {
       content: [
         {
@@ -956,11 +973,11 @@ export class OsfApiMcpServer {
     };
   }
 &nbsp;
-  private handleFulltextSearch(args: any) {
+  private handleFulltextSearch(args: Record&lt;string, unknown&gt;) {
     if (!args.query) {
       throw new Error('query parameter is required');
     }
-    const results = fulltextSearch(this.loader, args);
+    const results = fulltextSearch(this.loader, args as unknown as FulltextSearchParams);
     return {
       content: [
         {
@@ -971,21 +988,22 @@ export class OsfApiMcpServer {
     };
   }
 &nbsp;
-  private handleGetEndpointDetails(args: any) {
+  private handleGetEndpointDetails(args: Record&lt;string, unknown&gt;) {
     if (!args.path || !args.method) {
       throw new Error('path and method parameters are required');
     }
 &nbsp;
+    const typedArgs = args as unknown as GetEndpointDetailsParams;
     const index = this.loader.getEndpointIndex();
-    const operation = index.paths.get(args.path)?.get(args.method.toUpperCase());
+    const operation = index.paths.get(typedArgs.path)?.get(typedArgs.method.toUpperCase());
 &nbsp;
     if (!operation) {
-      throw new Error(`Endpoint not found: ${args.method.toUpperCase()} ${args.path}`);
+      throw new Error(`Endpoint not found: ${typedArgs.method.toUpperCase()} ${typedArgs.path}`);
     }
 &nbsp;
     const result = {
-      path: args.path,
-      method: args.method.toUpperCase(),
+      path: typedArgs.path,
+      method: typedArgs.method.toUpperCase(),
       summary: operation.summary,
       description: operation.description,
       operationId: operation.operationId,
@@ -1048,7 +1066,7 @@ export class OsfApiMcpServer {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-02-05T03:21:07.057Z
+                at 2026-02-05T07:25:34.342Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -38,7 +38,7 @@ export function searchSchemas(
     const operation = pathIndex.paths.get(path)?.get(method.toUpperCase());
 
     if (operation?.responses) {
-      for (const [statusCode, response] of Object.entries(operation.responses)) {
+      for (const [_statusCode, response] of Object.entries(operation.responses)) {
         if (response.schema) {
           results.push({
             schemaName: operation['x-response-schema'] || response.schema.title,
