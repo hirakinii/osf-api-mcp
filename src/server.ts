@@ -6,11 +6,16 @@ import {
   Tool,
 } from '@modelcontextprotocol/sdk/types.js';
 import { SwaggerLoader } from './utils/swagger-loader.js';
-import { searchEndpoints } from './search/endpoint-search.js';
-import { searchByTag } from './search/tag-search.js';
-import { searchSchemas } from './search/schema-search.js';
-import { fulltextSearch } from './search/fulltext-search.js';
+import { searchEndpoints, EndpointSearchParams } from './search/endpoint-search.js';
+import { searchByTag, TagSearchParams } from './search/tag-search.js';
+import { searchSchemas, SchemaSearchParams } from './search/schema-search.js';
+import { fulltextSearch, FulltextSearchParams } from './search/fulltext-search.js';
 import { listEndpoints, ListEndpointsParams } from './search/list-endpoints.js';
+
+interface GetEndpointDetailsParams {
+  path: string;
+  method: string;
+}
 
 export class OsfApiMcpServer {
   private server: Server;
@@ -49,19 +54,19 @@ export class OsfApiMcpServer {
       try {
         switch (name) {
           case 'search_endpoints':
-            return this.handleSearchEndpoints(args || {});
+            return this.handleSearchEndpoints(args as unknown as EndpointSearchParams);
           case 'search_by_tag':
-            return this.handleSearchByTag(args || {});
+            return this.handleSearchByTag(args as unknown as TagSearchParams);
           case 'search_schemas':
-            return this.handleSearchSchemas(args || {});
+            return this.handleSearchSchemas(args as unknown as SchemaSearchParams);
           case 'fulltext_search':
-            return this.handleFulltextSearch(args || {});
+            return this.handleFulltextSearch(args as unknown as FulltextSearchParams);
           case 'get_endpoint_details':
-            return this.handleGetEndpointDetails(args || {});
+            return this.handleGetEndpointDetails(args as unknown as GetEndpointDetailsParams);
           case 'list_tags':
             return this.handleListTags();
           case 'list_endpoints':
-            return this.handleListEndpoints(args || {});
+            return this.handleListEndpoints(args as unknown as ListEndpointsParams);
           default:
             throw new Error(`Unknown tool: ${name}`);
         }
@@ -222,7 +227,7 @@ export class OsfApiMcpServer {
     ];
   }
 
-  private handleSearchEndpoints(args: any) {
+  private handleSearchEndpoints(args: EndpointSearchParams) {
     const results = searchEndpoints(this.loader, args);
     return {
       content: [
@@ -234,7 +239,7 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleSearchByTag(args: any) {
+  private handleSearchByTag(args: TagSearchParams) {
     if (!args.tag) {
       throw new Error('tag parameter is required');
     }
@@ -249,7 +254,7 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleSearchSchemas(args: any) {
+  private handleSearchSchemas(args: SchemaSearchParams) {
     const results = searchSchemas(this.loader, args);
     return {
       content: [
@@ -261,7 +266,7 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleFulltextSearch(args: any) {
+  private handleFulltextSearch(args: FulltextSearchParams) {
     if (!args.query) {
       throw new Error('query parameter is required');
     }
@@ -276,7 +281,7 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleGetEndpointDetails(args: any) {
+  private handleGetEndpointDetails(args: GetEndpointDetailsParams) {
     if (!args.path || !args.method) {
       throw new Error('path and method parameters are required');
     }

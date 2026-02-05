@@ -120,7 +120,7 @@ export class SwaggerLoader {
       for (const method of ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'] as const) {
         const operation = pathItem[method];
         if (operation?.responses) {
-          for (const [statusCode, response] of Object.entries(operation.responses)) {
+          for (const [, response] of Object.entries(operation.responses)) {
             if (response.schema) {
               const schemaName = operation['x-response-schema'] || response.schema.title;
               const schemaResult: SchemaResult = {
