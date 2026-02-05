@@ -148,6 +148,22 @@ Get all available tags/categories with their descriptions.
 
 **Parameters:** None
 
+### 7. list_endpoints
+
+List all available OSF API v2 endpoints with pagination.
+
+**Parameters:**
+- `limit` (optional): Maximum number of endpoints to return (default: 50)
+- `offset` (optional): Number of endpoints to skip (default: 0)
+
+**Example:**
+```json
+{
+  "limit": 20,
+  "offset": 0
+}
+```
+
 ## API Specification
 
 This server indexes the complete OSF API v2 specification:
@@ -171,6 +187,9 @@ osf-api-mcp/
 │   ├── types.ts                    # TypeScript type definitions
 │   ├── __mocks__/                  # Test mocks
 │   │   └── swagger-loader.mock.ts
+│   ├── __fixtures__/               # Test fixtures
+│   │   ├── swagger-minimal.json
+│   │   └── swagger-edge-cases.json
 │   ├── search/                     # Search implementations
 │   │   ├── endpoint-search.ts
 │   │   ├── endpoint-search.test.ts
@@ -179,13 +198,15 @@ osf-api-mcp/
 │   │   ├── schema-search.ts
 │   │   ├── schema-search.test.ts
 │   │   ├── fulltext-search.ts
-│   │   └── fulltext-search.test.ts
+│   │   ├── fulltext-search.test.ts
+│   │   └── list-endpoints.ts       # Endpoint listing with pagination
 │   └── utils/
 │       ├── swagger-loader.ts       # Swagger spec loader & indexer
 │       └── swagger-loader.test.ts
 ├── schema/
 │   └── osf_api/
-│       └── swagger.json            # OSF API specification
+│       ├── swagger.json            # OSF API specification (full)
+│       └── swagger_short.json      # OSF API specification (abbreviated)
 ├── vitest.config.ts                # Vitest configuration
 └── eslint.config.js                # ESLint configuration
 ```
