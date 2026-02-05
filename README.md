@@ -35,6 +35,8 @@ Add to your Claude Desktop configuration (`claude_desktop_config.json`):
 }
 ```
 
+As of 2025/2/5, you can add this server to `<project_root>/.mcp.json` to configure it with the project scope.
+
 ### Testing with MCP Inspector
 
 ```bash

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "osf-api-docs": {
+      "command": "node",
+      "args": [
+        "/home/user/projects/osf-api-mcp/dist/index.js"
+      ],
+      "env": {}
+    }
+  }
+}
