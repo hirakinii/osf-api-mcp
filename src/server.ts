@@ -10,6 +10,7 @@ import { searchEndpoints, type EndpointSearchParams } from './search/endpoint-se
 import { searchByTag, type TagSearchParams } from './search/tag-search.js';
 import { searchSchemas, type SchemaSearchParams } from './search/schema-search.js';
 import { fulltextSearch, type FulltextSearchParams } from './search/fulltext-search.js';
+import { listEndpoints, type ListEndpointsParams } from './search/list-endpoints.js';
 
 interface GetEndpointDetailsParams {
   path: string;
@@ -226,8 +227,8 @@ export class OsfApiMcpServer {
     ];
   }
 
-  private handleSearchEndpoints(args: Record<string, unknown>) {
-    const results = searchEndpoints(this.loader, args as EndpointSearchParams);
+  private handleSearchEndpoints(args: EndpointSearchParams) {
+    const results = searchEndpoints(this.loader, args);
     return {
       content: [
         {
@@ -238,11 +239,11 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleSearchByTag(args: Record<string, unknown>) {
+  private handleSearchByTag(args: TagSearchParams) {
     if (!args.tag) {
       throw new Error('tag parameter is required');
     }
-    const results = searchByTag(this.loader, args as unknown as TagSearchParams);
+    const results = searchByTag(this.loader, args);
     return {
       content: [
         {
@@ -253,8 +254,8 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleSearchSchemas(args: Record<string, unknown>) {
-    const results = searchSchemas(this.loader, args as SchemaSearchParams);
+  private handleSearchSchemas(args: SchemaSearchParams) {
+    const results = searchSchemas(this.loader, args);
     return {
       content: [
         {
@@ -265,11 +266,11 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleFulltextSearch(args: Record<string, unknown>) {
+  private handleFulltextSearch(args: FulltextSearchParams) {
     if (!args.query) {
       throw new Error('query parameter is required');
     }
-    const results = fulltextSearch(this.loader, args as unknown as FulltextSearchParams);
+    const results = fulltextSearch(this.loader, args);
     return {
       content: [
         {
@@ -280,22 +281,21 @@ export class OsfApiMcpServer {
     };
   }
 
-  private handleGetEndpointDetails(args: Record<string, unknown>) {
+  private handleGetEndpointDetails(args: GetEndpointDetailsParams) {
     if (!args.path || !args.method) {
       throw new Error('path and method parameters are required');
     }
 
-    const typedArgs = args as unknown as GetEndpointDetailsParams;
     const index = this.loader.getEndpointIndex();
-    const operation = index.paths.get(typedArgs.path)?.get(typedArgs.method.toUpperCase());
+    const operation = index.paths.get(args.path)?.get(args.method.toUpperCase());
 
     if (!operation) {
-      throw new Error(`Endpoint not found: ${typedArgs.method.toUpperCase()} ${typedArgs.path}`);
+      throw new Error(`Endpoint not found: ${args.method.toUpperCase()} ${args.path}`);
     }
 
     const result = {
-      path: typedArgs.path,
-      method: typedArgs.method.toUpperCase(),
+      path: args.path,
+      method: args.method.toUpperCase(),
       summary: operation.summary,
       description: operation.description,
       operationId: operation.operationId,

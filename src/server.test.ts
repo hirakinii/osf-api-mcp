@@ -32,11 +32,11 @@ describe('OsfApiMcpServer', () => {
   });
 
   describe('getTools', () => {
-    it('should return 6 tools', async () => {
+    it('should return 7 tools', async () => {
       // Access private method via type assertion
       const tools = (server as any).getTools();
 
-      expect(tools.length).toBe(6);
+      expect(tools.length).toBe(7);
     });
 
     it('should include all expected tool names', async () => {
@@ -49,6 +49,7 @@ describe('OsfApiMcpServer', () => {
       expect(toolNames).toContain('fulltext_search');
       expect(toolNames).toContain('get_endpoint_details');
       expect(toolNames).toContain('list_tags');
+      expect(toolNames).toContain('list_endpoints');
     });
 
     it('should have proper inputSchema for each tool', async () => {
